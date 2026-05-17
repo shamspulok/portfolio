@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shams Akhand — Software Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --accent: #00e5c3;
+    --accent2: #7c5cfc;
+    --gold: #f0c040;
+    --text: #e8e8f0;
+    --muted: #7070a0;
+    --border: rgba(255,255,255,0.07);
+    --glow: 0 0 40px rgba(0,229,195,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.2s;
+    opacity: 0.5;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+  }
+
+  /* NAVIGATION */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 3rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 0 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(124,92,252,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 10% 80%, rgba(0,229,195,0.12) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 900px;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,229,195,0.08);
+    border: 1px solid rgba(0,229,195,0.25);
+    border-radius: 2px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1.hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  h1.hero-name .line1 { display: block; color: var(--text); }
+  h1.hero-name .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-role {
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-role strong { color: var(--text); }
+
+  .hero-desc {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: var(--muted);
+    max-width: 540px;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,229,195,0.35);
+  }
+  .btn-outline {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* HERO FLOATING BADGES */
+  .hero-badges {
+    position: absolute; right: 3rem; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 1rem;
+    animation: fadeLeft 1s 0.8s ease both;
+  }
+  .badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: center;
+    min-width: 120px;
+  }
+  .badge strong { display: block; font-size: 1.5rem; color: var(--accent); font-family: 'Syne', sans-serif; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:none; } }
+  @keyframes fadeLeft { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:none; } }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 3rem;
+    position: relative;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  .section-num {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* EXPERIENCE */
+  .exp-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .exp-block:hover {
+    border-color: rgba(0,229,195,0.3);
+    box-shadow: var(--glow);
+  }
+  .exp-block::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+  }
+  .exp-company {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .exp-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+  }
+  .exp-period {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .exp-period .dot {
+    width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+  .exp-bullets li {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem 1.4rem;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0,229,195,0.3);
+  }
+  .skill-cat {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+  }
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .skill-bar-track {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    margin-top: 0.8rem;
+    overflow: hidden;
+  }
+  .skill-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 1px;
+    transform-origin: left;
+    animation: growBar 1.5s ease both;
+  }
+  @keyframes growBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* TRAINING */
+  .training-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  .training-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.6rem;
+    transition: border-color 0.3s, transform 0.2s;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .training-card:hover {
+    border-color: rgba(124,92,252,0.4);
+    transform: translateY(-3px);
+  }
+  .training-icon {
+    font-size: 1.5rem; margin-bottom: 0.3rem;
+  }
+  .training-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .training-org {
+    font-size: 0.7rem;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+  }
+  .training-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 0.3rem;
+  }
+
+  /* EDUCATION */
+  .edu-list { display: flex; flex-direction: column; gap: 1.2rem; }
+  .edu-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.6rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    transition: border-color 0.3s;
+  }
+  .edu-card:hover { border-color: rgba(240,192,64,0.3); }
+  .edu-degree {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .edu-school { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.2rem; }
+  .edu-field { font-size: 0.72rem; color: var(--accent); letter-spacing: 0.08em; }
+  .edu-grade {
+    text-align: right;
+  }
+  .edu-gpa {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .edu-year { font-size: 0.7rem; color: var(--muted); }
+
+  /* LANGUAGES */
+  .lang-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    max-width: 700px;
+  }
+  .lang-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.8rem;
+  }
+  .lang-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .lang-level {
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+  .lang-rows { display: flex; flex-direction: column; gap: 0.5rem; }
+  .lang-row { display: flex; justify-content: space-between; align-items: center; }
+  .lang-skill-name { font-size: 0.7rem; color: var(--muted); }
+  .lang-dots { display: flex; gap: 3px; }
+  .lang-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    border: 1px solid var(--muted);
+  }
+  .lang-dot.filled { background: var(--accent); border-color: var(--accent); }
+
+  /* HOBBIES */
+  .hobby-list {
+    display: flex; flex-wrap: wrap; gap: 0.8rem;
+  }
+  .hobby-tag {
+    padding: 0.6rem 1.2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    transition: border-color 0.2s, color 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .hobby-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 700px;
+  }
+  .contact-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.6rem;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+  .contact-card:hover {
+    border-color: rgba(0,229,195,0.3);
+    transform: translateY(-2px);
+  }
+  .contact-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .contact-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    word-break: break-all;
+  }
+  .contact-val a { color: var(--accent); text-decoration: none; }
+  .contact-val a:hover { text-decoration: underline; }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  footer span { color: var(--accent); }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 0 1.5rem; }
+    .hero-badges { display: none; }
+    h1.hero-name { font-size: 3rem; }
+    .contact-grid, .lang-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Shams<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#training">Training</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Available for opportunities</div>
+    <h1 class="hero-name">
+      <span class="line1">Md Robiyet</span>
+      <span class="line2">Shams Akhand</span>
+    </h1>
+    <p class="hero-role">
+      <strong>Software Engineer</strong> · SIXNeurons &nbsp;|&nbsp; <strong>MSc IT Engineering</strong> · FH Wedel, Germany
+    </p>
+    <p class="hero-desc">
+      A motivated engineer building scalable, high-performance software solutions. I bridge cross-functional teams to deliver reliable platforms — from architecture to code review to production.
+    </p>
+    <div class="hero-cta">
+      <a href="#experience" class="btn-primary">View My Work</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+
+  <div class="hero-badges">
+    <div class="badge"><strong>2+</strong>Years Experience</div>
+    <div class="badge"><strong>ICT</strong>Graduate</div>
+    <div class="badge"><strong>5+</strong>Certifications</div>
+    <div class="badge"><strong>C1</strong>English Level</div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-num">01 / Experience</span>
+    <h2 class="section-title">Work History</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="exp-block reveal">
+    <div class="exp-company">SIXNeurons — Savar, Bangladesh</div>
+    <div class="exp-role">Software Engineer</div>
+    <div class="exp-period">
+      <span class="dot"></span>
+      Feb 2023 — Present (2+ Years)
+    </div>
+    <ul class="exp-bullets">
+      <li>Designed, developed, and maintained scalable software solutions ensuring high performance and reliability across core SIXNeurons platforms.</li>
+      <li>Collaborated with cross-functional teams to gather requirements, implement new features, and resolve technical challenges efficiently.</li>
+      <li>Performed code reviews, optimized system architecture, and contributed to best-practice engineering processes to improve overall product quality.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="background: linear-gradient(180deg, transparent, rgba(124,92,252,0.04));">
+  <div class="section-header reveal">
+    <span class="section-num">02 / Skills</span>
+    <h2 class="section-title">Technical Expertise</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-cat">Development</div>
+      <div class="skill-name">Web Application Dev</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:90%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-cat">Design</div>
+      <div class="skill-name">UI/UX Design</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:80%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-cat">Security</div>
+      <div class="skill-name">Network Security</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:75%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-cat">Data</div>
+      <div class="skill-name">Data Science & Python</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:78%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-cat">Engineering</div>
+      <div class="skill-name">System Architecture</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:82%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-cat">Process</div>
+      <div class="skill-name">Code Review & Best Practices</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:88%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-cat">Ethics</div>
+      <div class="skill-name">Data Science Ethics</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:85%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-cat">Collaboration</div>
+      <div class="skill-name">Cross-Functional Teamwork</div>
+      <div class="skill-bar-track"><div class="skill-bar" style="width:92%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINING -->
+<section id="training">
+  <div class="section-header reveal">
+    <span class="section-num">03 / Training</span>
+    <h2 class="section-title">Certifications & Courses</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="training-grid">
+    <div class="training-card reveal">
+      <div class="training-icon">🌐</div>
+      <div class="training-title">Web Application Development</div>
+      <div class="training-org">Bangladesh Hi-Tech Park Authority</div>
+      <div class="training-desc">Building dynamic, responsive web applications using modern frameworks and best practices.</div>
+    </div>
+    <div class="training-card reveal">
+      <div class="training-icon">🎨</div>
+      <div class="training-title">UI/UX Design</div>
+      <div class="training-org">ICT Division, Bangladesh</div>
+      <div class="training-desc">User-centered design principles, wireframing, and prototyping for intuitive interfaces.</div>
+    </div>
+    <div class="training-card reveal">
+      <div class="training-icon">🔒</div>
+      <div class="training-title">Network Security</div>
+      <div class="training-org">Digital Learning</div>
+      <div class="training-desc">Cybersecurity fundamentals, threat prevention, and secure network practices.</div>
+    </div>
+    <div class="training-card reveal">
+      <div class="training-icon">⚖️</div>
+      <div class="training-title">Data Science Ethics</div>
+      <div class="training-org">Coursera</div>
+      <div class="training-desc">Ethical data handling, privacy, fairness, and responsible AI use.</div>
+    </div>
+    <div class="training-card reveal">
+      <div class="training-icon">🐍</div>
+      <div class="training-title">Data Science with Python</div>
+      <div class="training-org">Simplilearn</div>
+      <div class="training-desc">Data analysis, visualization, and machine learning techniques using Python.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="background: linear-gradient(180deg, transparent, rgba(0,229,195,0.03));">
+  <div class="section-header reveal">
+    <span class="section-num">04 / Education</span>
+    <h2 class="section-title">Academic Background</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-list">
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-degree">MSc (Eng) — IT Engineering</div>
+        <div class="edu-school">Fachhochschule Wedel — University of Applied Sciences, Germany</div>
+        <div class="edu-field">IT Engineering · 2026 — Running</div>
+      </div>
+      <div class="edu-grade">
+        <div class="edu-gpa" style="font-size:1.1rem; color: var(--accent);">In Progress</div>
+        <div class="edu-year">Current</div>
+      </div>
+    </div>
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-degree">B.Sc Engineering — Information & Communication Technology</div>
+        <div class="edu-school">Comilla University, Bangladesh</div>
+        <div class="edu-field">ICT · 2022</div>
+      </div>
+    </div>
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-degree">Higher Secondary Certificate (HSC) — Science</div>
+        <div class="edu-school">BAF Shaheen College, Dhaka, Bangladesh</div>
+        <div class="edu-field">Science · 2016</div>
+      </div>
+    </div>
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-degree">Secondary School Certificate (SSC) — Science</div>
+        <div class="edu-school">Comilla Zilla School, Bangladesh</div>
+        <div class="edu-field">Science · 2014</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LANGUAGES & HOBBIES -->
+<section id="languages">
+  <div class="section-header reveal">
+    <span class="section-num">05 / Languages</span>
+    <h2 class="section-title">Communication</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="lang-grid">
+    <div class="lang-card reveal">
+      <div class="lang-name">Bengali</div>
+      <div class="lang-level">Mother Tongue</div>
+      <div class="lang-rows">
+        <div class="lang-row"><span class="lang-skill-name">All skills</span>
+          <div class="lang-dots">
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lang-card reveal">
+      <div class="lang-name">English</div>
+      <div class="lang-level">Proficient User (C1)</div>
+      <div class="lang-rows">
+        <div class="lang-row"><span class="lang-skill-name">Listening</span>
+          <div class="lang-dots">
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div>
+          </div>
+        </div>
+        <div class="lang-row"><span class="lang-skill-name">Reading</span>
+          <div class="lang-dots">
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot"></div>
+          </div>
+        </div>
+        <div class="lang-row"><span class="lang-skill-name">Speaking</span>
+          <div class="lang-dots">
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div>
+          </div>
+        </div>
+        <div class="lang-row"><span class="lang-skill-name">Writing</span>
+          <div class="lang-dots">
+            <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
+            <div class="lang-dot filled"></div><div class="lang-dot"></div>
+            <div class="lang-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 3.5rem;">
+    <div class="section-header reveal" style="margin-bottom: 1.5rem;">
+      <span class="section-num">06 / Interests</span>
+      <h2 class="section-title" style="font-size: 1.5rem;">Hobbies</h2>
+    </div>
+    <div class="hobby-list reveal">
+      <div class="hobby-tag">📚 Reading & Self-Development</div>
+      <div class="hobby-tag">✈️ Traveling</div>
+      <div class="hobby-tag">⚽ Sports & Fitness</div>
+      <div class="hobby-tag">🤝 Volunteering & Community Work</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background: linear-gradient(180deg, rgba(124,92,252,0.04), transparent);">
+  <div class="section-header reveal">
+    <span class="section-num">07 / Contact</span>
+    <h2 class="section-title">Get In Touch</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-card reveal">
+      <div class="contact-label">Email</div>
+      <div class="contact-val"><a href="mailto:pulokshams@gmail.com">pulokshams@gmail.com</a></div>
+    </div>
+    <div class="contact-card reveal">
+      <div class="contact-label">Phone</div>
+      <div class="contact-val">+49 163 176 4329</div>
+    </div>
+    <div class="contact-card reveal">
+      <div class="contact-label">Location</div>
+      <div class="contact-val">Tinsdaler Weg 127, Wedel, Germany</div>
+    </div>
+    <div class="contact-card reveal">
+      <div class="contact-label">Nationality</div>
+      <div class="contact-val">🇧🇩 Bangladeshi</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>© 2026 <span>Md Robiyet Shams Akhand</span>. All rights reserved.</div>
+  <div>Built with precision · Software Engineer · Wedel, Germany</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button, .skill-card, .training-card, .edu-card, .contact-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      ring.style.width = '54px';
+      ring.style.height = '54px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
